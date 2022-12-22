@@ -1,0 +1,125 @@
+<!-- include A-Frame obviously -->
+
+<!--
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+
+<script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+<script src="https://unpkg.com/aframe-animation-component@^4.1.2/dist/aframe-animation-component.min.js"></script> 
+<script src="https://unpkg.com/aframe-text-geometry-component@^0.5.0/dist/aframe-text-geometry-component.min.js"></script> 
+
+<script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+-->
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+<script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+<script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+<script src="https://unpkg.com/aframe-text-geometry-component@^0.5.0/dist/aframe-text-geometry-component.min.js"></script> 
+
+<script>
+
+    const scene = document.querySelector('a-scene');
+
+    setTimeout(() => {
+        const s = document.querySelector('#santa');
+    if (s == null) {
+        console.log("s is null!");
+    } else {
+        console.log("s is not null!!");
+    }
+
+    // a-marker
+    const m = document.querySelector('#marker');
+    if (m == null) {
+        console.log("m is null!");
+    } else {
+        console.log("m is not null!!");
+    }
+
+    var addedAnimations = false;
+    m.addEventListener("markerFound", (e) => {
+        if (addedAnimations) {
+            return;
+        }
+        addedAnimations = true;
+        console.log("MARKER FOUND!!!")
+        setTimeout(() => {
+            const merryText = document.querySelector('#merry-text');
+            merryText.setAttribute('animation', 'property: scale; to: 2.5 2.5 2.5; loop: false; dur: 700; easing: easeOutQuad;');
+
+            var audio = new Audio('merry_christmas.mp3');
+            audio.play();
+        }, 100);
+        setTimeout(() => {
+            const christmasText = document.querySelector('#christmas-text');
+            christmasText.setAttribute('animation', 'property: scale; to: 2.5 2.5 2.5; loop: false; dur: 700; easing: easeOutQuad;');
+        }, 600);
+        setTimeout(() => {
+            const mysterybox = document.querySelector('#mysterybox');
+            mysterybox.setAttribute('animation', 'property: scale; to: 5.0 5.0 5.0; loop: false; dur: 700; easing: easeOutQuad;');
+        }, 3000);
+        setTimeout(() => {
+            const mysterybox = document.querySelector('#mysterybox');
+            mysterybox.setAttribute('animation', 'property: rotation; to: 0 360 0; loop: true; dur: 5000;');
+        }, 3800);
+    });
+
+    m.addEventListener("markerLost", (e) => {
+        
+    });        
+  }, 1000);
+
+
+</script>
+
+<body style="margin: 0px; overflow: hidden">
+
+    <a-scene     
+        vr-mode-ui="enabled: false;"
+        renderer="logarithmicDepthBuffer: true;"
+        embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
+
+    <a-assets>  
+        <a-asset-item id="optimerBoldFont" src="https://rawgit.com/mrdoob/three.js/dev/examples/fonts/optimer_bold.typeface.json"></a-asset-item>
+
+        <img id="mystery-image" src="hidden_object_img.png">
+    </a-assets>    
+
+<!--    <a-marker id="marker" markerhandler emitevents="true" preset="hiro"
+        smooth="true"
+        smoothCount="1"
+        smoothTolerance=".01"
+        smoothThreshold="2"> -->
+
+        <a-marker id="marker" type='barcode' value='1' markerhandler emitevents="true"
+        smooth="true"
+        smoothCount="1"
+        smoothTolerance=".01"
+        smoothThreshold="2">        
+        
+        <a-entity rotation="-45 0 0">
+        <a-entity
+        id="santa"
+        gltf-model="./santa_model.glb"
+        scale="1.0 1.0 1.0"
+        position="0 0 0"
+        ></a-entity>
+
+        <a-entity position="0 0 0" rotation="20 5 0">
+            <a-entity id="merry-text" text-geometry="value: Merry; font: #optimerBoldFont" position="-5.5 0 0" scale="0.001 0.001 0.001" material="color: #FFD700" ></a-entity>
+          </a-entity>
+        <a-entity position="0 0 0" rotation="20 -5 0">
+            <a-entity id="christmas-text" text-geometry="value: Christmas; font: #optimerBoldFont" position="1.0 0 0" scale="0.001 0.001 0.001" material="color: #FFD700"></a-entity>
+        </a-entity>        
+
+        <a-image id="mysterybox" src="#mystery-image" position="0.0 6.5 0.0" scale="0.001 0.001 0.001">
+
+        </a-image>
+    
+        </a-entity>
+    </a-marker>
+
+    <a-entity camera>
+    </a-entity>
+    
+    </a-scene>
+
+</body>
