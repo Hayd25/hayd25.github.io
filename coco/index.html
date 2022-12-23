@@ -16,7 +16,26 @@
 
 <script>
 
-    const scene = document.querySelector('a-scene');
+var tapped = false;
+
+function playSound(url) {
+  var ourAudio = document.createElement('audio'); // Create a audio element using the DOM
+  ourAudio.style.display = "none"; // Hide the audio element
+  ourAudio.src = url; // Set resource to our URL
+  ourAudio.autoplay = true; // Automatically play sound
+  ourAudio.onended = function() {
+    this.remove(); // Remove when played.
+  };
+  document.body.appendChild(ourAudio);
+}
+
+const scene = document.querySelector('a-scene');
+
+
+function setupScene() {
+    var audio = new Audio('santa_audio_coco.mp3');
+    audio.load();
+
 
     setTimeout(() => {
         const s = document.querySelector('#santa');
@@ -42,30 +61,38 @@
         addedAnimations = true;
         console.log("MARKER FOUND!!!")
         setTimeout(() => {
-            const merryText = document.querySelector('#merry-text');
-            merryText.setAttribute('animation', 'property: scale; to: 2.5 2.5 2.5; loop: false; dur: 700; easing: easeOutQuad;');
+            const santa = document.querySelector('#santa');
+            santa.setAttribute('animation', 'property: scale; to: 1.0 1.0 1.0; loop: false; dur: 100; easing: easeOutQuad;');
+        }, 50);
 
-            var audio = new Audio('merry_christmas.mp3');
+        setTimeout(() => {
+            const merryText = document.querySelector('#merry-text');
+            merryText.setAttribute('animation', 'property: scale; to: 1.0 1.0 1.0; loop: false; dur: 700; easing: easeOutQuad;');
+            
             audio.play();
+            //playSound('santa_audio_coco.mp3');
         }, 100);
         setTimeout(() => {
             const christmasText = document.querySelector('#christmas-text');
-            christmasText.setAttribute('animation', 'property: scale; to: 2.5 2.5 2.5; loop: false; dur: 700; easing: easeOutQuad;');
+            christmasText.setAttribute('animation', 'property: scale; to: 1.0 1.0 1.0; loop: false; dur: 700; easing: easeOutQuad;');
         }, 600);
-        setTimeout(() => {
-            const mysterybox = document.querySelector('#mysterybox');
-            mysterybox.setAttribute('animation', 'property: scale; to: 5.0 5.0 5.0; loop: false; dur: 700; easing: easeOutQuad;');
-        }, 3000);
-        setTimeout(() => {
-            const mysterybox = document.querySelector('#mysterybox');
-            mysterybox.setAttribute('animation', 'property: rotation; to: 0 360 0; loop: true; dur: 5000;');
-        }, 3800);
     });
 
     m.addEventListener("markerLost", (e) => {
         
     });        
   }, 1000);
+}
+
+setTimeout(() => {
+    const touchView = document.querySelector('#touchView');
+    touchView.onclick = function(e){
+        touchView.setAttribute('hidden', true);
+        console.log('user tapped scene');
+        setupScene();
+        return false;
+    }
+}, 500);
 
 
 </script>
@@ -73,6 +100,7 @@
 <body style="margin: 0px; overflow: hidden">
 
     <a-scene     
+        id="scene"
         vr-mode-ui="enabled: false;"
         renderer="logarithmicDepthBuffer: true;"
         embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
@@ -99,20 +127,16 @@
         <a-entity
         id="santa"
         gltf-model="./santa_model.glb"
-        scale="1.0 1.0 1.0"
+        scale="0.0001 0.0001 0.0001"
         position="0 0 0"
         ></a-entity>
 
         <a-entity position="0 0 0" rotation="20 5 0">
-            <a-entity id="merry-text" text-geometry="value: Merry; font: #optimerBoldFont" position="-5.5 0 0" scale="0.001 0.001 0.001" material="color: #FFD700" ></a-entity>
+            <a-entity id="merry-text" text-geometry="value: Merry; font: #optimerBoldFont" position="-2.5 0 0" scale="0.001 0.001 0.001" material="color: #FFD700" ></a-entity>
           </a-entity>
         <a-entity position="0 0 0" rotation="20 -5 0">
-            <a-entity id="christmas-text" text-geometry="value: Christmas; font: #optimerBoldFont" position="1.0 0 0" scale="0.001 0.001 0.001" material="color: #FFD700"></a-entity>
+            <a-entity id="christmas-text" text-geometry="value: Christmas; font: #optimerBoldFont" position="0.5 0 0" scale="0.001 0.001 0.001" material="color: #FFD700"></a-entity>
         </a-entity>        
-
-        <a-image id="mysterybox" src="#mystery-image" position="0.0 6.5 0.0" scale="0.001 0.001 0.001">
-
-        </a-image>
     
         </a-entity>
     </a-marker>
@@ -121,5 +145,11 @@
     </a-entity>
     
     </a-scene>
+
+    <div id="touchView" style="position:absolute; z-index: 9999; width: 100%; height: 100%; background:rgba(0, 0, 0, 0.5); top: calc(0%); left: calc(0%);">
+        <div style="position:absolute; top: calc(50%); left: calc(50%); color: white;">
+            タップしてください
+        </div>
+    </div>
 
 </body>
